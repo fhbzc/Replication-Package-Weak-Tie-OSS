@@ -1,5 +1,7 @@
 # Replication Guide for `replicate_main.Rmd`
 
+This is the replication package for our paper *[The Strength of Weak Ties Between Open-Source Developers](https://arxiv.org/pdf/2411.05646)*.
+
 `replicate_main.Rmd` is the main program for this project — every Table
 and Figure reported in the paper is reproduced by running chunks inside
 this single .Rmd. All paths in the .Rmd are relative, so set the working
