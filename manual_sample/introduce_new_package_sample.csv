@@ -1,0 +1,101 @@
+woc,package,Author,is_core_flag,is_core_flag_int
+determined-ai_determined,nlp,Angela Jiang <ahj@determined.ai>,FALSE,0
+tensorflow_models,global,liupeng05 <liupeng05@kuaishou.com>,FALSE,0
+asascience-open_ooi-ui-services,geojson,ednad <ednapa01@gmail.com>,FALSE,0
+zietzm_map-modifiers,nltk,ysc321 <16828483+ysc321@users.noreply.github.com>,FALSE,0
+team-mayes_atesa,input,Tucker Burgin <tburgin@uw.edu>,FALSE,0
+LCAV_pyroomacoustics,requests,Alexis Mermet <alexis.mermet@epfl.ch>,FALSE,0
+mideind_Greynir,queries,Sveinbjorn Thordarson <sveinbjornt@simnet.is>,FALSE,0
+leo-editor_leo-editor,will,tbnorth <terry_n_brown@yahoo.com>,FALSE,0
+damiafuentes_DJITelloPy,av,ehong-tl <ehong@ntu.edu.sg>,FALSE,0
+ctsit_redi,docopt,Radha Kandula <rkandula@ufl.edu>,FALSE,0
+PeihaoChen_RSPNet,numpy,wuhuachao <huachaowu_ck@163.com>,FALSE,0
+desihub_desispec,cupy,Daniel <danielmargala@lbl.gov>,FALSE,0
+stgl_TopoAnalysis,numpy,sjohnstone <johnsamstone@gmail.com>,FALSE,0
+vlaci_openconnect-sso,lxml,Patrick Marlier <pamarlie@cisco.com>,FALSE,0
+microsoft_nni,examples,Guoxin <suiguoxin@gmail.com>,FALSE,0
+sibson_redbeat,pytz,Nikolay Pavlovich <n.pavlovich@corp.mail.ru>,FALSE,0
+2015fallhw_cdw11,init,scrum1 <scrum1@mde.tw>,FALSE,0
+arista-northwest_shakedown,pexpect,jmather <jmather@arista.com>,TRUE,1
+uweschmitt_emzed2,project,Uwe <uwe.schmitt@id.ethz.ch>,TRUE,1
+visualfabriq_parqueryd,numpy,carstvaartjes@gmail.com <JunoAdmin76>,TRUE,1
+erdos-project_pylot,tf,Ionel Gog <gogionel@gmail.com>,TRUE,1
+decile-team_cords,sklearn,krishnateja <krishnateja.killamsetty@utdallas.edu>,TRUE,1
+aristanetworks_atd-public,websockets,BG <bmgreer09@gmail.com>,TRUE,1
+joeynmt_joeynmt,seaborn,a <JuliaKreutzer1@aol.com>,TRUE,1
+Himenon_TaskQueueLearn,retrying,himenon <k.himeno314@gmail.com>,TRUE,1
+matthewgdv_subtypes,regex,Mettpawwz <matthewgdv@gmail.com>,TRUE,1
+ProvZH_satellite_images_nso,requests,Winter <mr.de.winter@pzh.nl>,TRUE,1
+LSSTDESC_Spectractor,logbook,Jeremy <jdp.neveu@gmail.com>,TRUE,1
+johnbumgarner_wordhoard,requests,johnbumgarner <50935186+johnbumgarner@users.noreply.github.com>,TRUE,1
+Fifteen-rm_backend,pymysql,kihyuk <keyhyuk.kim@gmail.com>,TRUE,1
+nhthang99_cse-cn,emoji,nhtha <nhthang99@outlook.com>,TRUE,1
+gisce_heman,flask,unknown <ecarreras@gisce.net>,TRUE,1
+PhonologicalCorpusTools_CorpusTools,sip,jsmackie <mr.jsmackie@gmail.com>,TRUE,1
+jfear_larval_gonad,nbformat,jfear <jfear@ufl.edu>,TRUE,1
+SergioAlvarezM_Mallas-Geometricas-Tarea,imageio,Sergio <ser.alvarez1998@gmail.com>,TRUE,1
+gluster_gdeploy,ansible,Nandaja <nandaja.varma@gmail.com>,TRUE,1
+superdesk_fireq,fire,Grisha K. <naspeh@ya.ru>,TRUE,1
+DaelonSuzuka_Stagehand,objc,daelon <daelonsuzuka@gmail.com>,TRUE,1
+idc9_mvdr,numpy,idc9 <idc9@cornell.edu>,TRUE,1
+JiangChuanGo_examples,bottle,JiangchuanGo <jiang.huchuan@qq.com>,TRUE,1
+gwik_geventhttpclient,client,ml31415 <ml@redcowmedia.de>,TRUE,1
+shitwolfymakes_Endless-Sky-Mission-Builder,ttkthemes,M*C*O <mcofficer@gmx.de>,TRUE,1
+descarteslabs_descarteslabs-python,arrow,justinwp <justinwp32@GMAIL.COM>,TRUE,1
+amauryval_OsmGT,numba,Amaury y <amauryval@gmail.com>,TRUE,1
+MarkusWET_ey-mann-wo-ist-mein-autoverleih,definitions,MarkusWET <markus@wetzlmayr.at>,TRUE,1
+mauroalberti_qgSurf,qgis,mauro <alberti.m65@gmail.com>,TRUE,1
+VLAM3D_vulkanmitts,PyQt5,Mathieu Lamarre <mlamarre@ea.com>,TRUE,1
+gbrusman_ScheduleBotPy,psycopg2,gbrusman <gabrielbrusman@gmail.com>,TRUE,1
+RidleyofZebes_dungeon-test,numpy,RidleyofZebes <JHoneycutt404@Gmail.com>,TRUE,1
+center-for-threat-informed-defense_tram,django,MarkDavidson <mdavidson@mitre.org>,TRUE,1
+faruk-ahmad_ml-proj-init,numpy,faruk-cse <faruk.csebrur@gmail.com>,TRUE,1
+Netflix_lemur,inflection,kevgliss <kevgliss@gmail.com>,TRUE,1
+Morphl-AI_MorphL-Community-Edition,pyspark,Alexandra <alexandra@webcrumbz.co>,TRUE,1
+UKPLab_emnlp2017-bilstm-cnn-crf,sklearn,Pavel <sorianopavel@gmail.com>,TRUE,1
+SAP_credential-digger,transformers,melisandequentzel <melisande.quentzel@gmail.com>,TRUE,1
+ndeutschmann_zunis,ruamel,Nicolas DEUTSCHMANN <ndeutschmann@hotmail.com>,TRUE,1
+MAfarrag_Hapi,statsmodels,Mostafa Farrag <eng_mostafa_ahmed23@yahoo.com>,TRUE,1
+ZSAIm_iqiyi-parser,gui,ZSAIm <34599927+ZSAIm@users.noreply.github.com>,TRUE,1
+2bndy5_CircuitPython_nRF24L01,pygments,2bndy5 <2bndy5@gmail.com>,TRUE,1
+cwentland0_pyGEMS_1D,matplotlib,chris <chriswen@umich.edu>,TRUE,1
+TeleBots-AI_Rename_Bot,requests,TeleBots-AI <77410540+TeleBots-AI@users.noreply.github.com>,TRUE,1
+olivierfriard_BORIS,add,olivierfriard <olivier.friard@unito.it>,TRUE,1
+grm34_PyArchboot,coloredlogs,grm34 <jerem.pardo@tutanota.com>,TRUE,1
+tulsawebdevs_django-multi-gtfs,dj,a <John-Whitlock@ieee.org>,TRUE,1
+Ilhasoft_bothub-engine,dj,Douglas <eu@douglaspaz.com>,TRUE,1
+sunpy_sunraster,xarray,Dan Ryan <ryand5@tcd.ie>,TRUE,1
+dhrone_pydPiper,numpy,dhrone <ron@ritchey.org>,TRUE,1
+findopendata_findopendata,flask,ekzhu <ekzhu@users.noreply.github.com>,TRUE,1
+sfschen_velocileptors,pyfftw,sfschen <shifan_chen@berkeley.edu>,TRUE,1
+andersstendevad_devopsdata,twitter,andst <andst@itu.dk>,TRUE,1
+adafruit_Adafruit_Blinka,RPi,ladyada <limor@ladyada.net>,TRUE,1
+ainokuos_Opintoseuraaja,invoke,Aino Kuosmanen <aino.kuosmanen@helsinki.fi>,TRUE,1
+adafruit_adafruit_circuitpython_ft62xx,digitalio,ladyada <limor@ladyada.net>,TRUE,1
+keiffster_program-y,telegram,keiffster <keiffster@gmail.com>,TRUE,1
+microsoft_archai,PIL,Shital Shah <sytelus@gmail.com>,TRUE,1
+dadyarri_jacob,github,Daniil <dadyarri@gmail.com>,TRUE,1
+cwant_tessagon,value,cwant <cjwant@gmail.com>,TRUE,1
+CS4311-spring-2020_pick-tool-team11-binarybeasts,pytesseract,pm511 <pmendoza7@miners.utep.edu>,TRUE,1
+astrochun_Zcalbase_gal,astroquery,cly <astro.chun@gmail.com>,TRUE,1
+icemtel_stokes,mesh,solovev <icemtel@gmail.com>,TRUE,1
+Will-J-Gale_Polygon-Anotator,numpy,Will <willgaleproductions@gmail.com>,TRUE,1
+alyssaq_face_morpher,matplotlib,root <alyssaquek@gmail.com>,TRUE,1
+neuroscout_neuroscout,werkzeug,zorro4 <aleph4@gmail.com>,TRUE,1
+PasseiDireto_gh-runner-task-action,action,vschettino <schettino.viniciusjunqueira@gmail.com>,TRUE,1
+Ouranosinc_raven,geojson,Zeitsperre <trevor_smith@live.com>,TRUE,1
+LewisLabUCSD_GlyCompare,statsmodels,bkellman <bkellman@ucsd.edu>,TRUE,1
+Ernir_bjorleitin,tweepy,Ernir <e.ernir@gmail.com>,TRUE,1
+aliaafee_automo,dateutil,= <ali.aafee@gmail.com>,TRUE,1
+p22co_edaemon,webapp2,Paul <paulsnar@gmail.com>,TRUE,1
+hzlzh_Alfred-Workflows,bs4,JinnLynn <eatfishlin@gmail.com>,TRUE,1
+epenet_hassRenaultZE,voluptuous,epenet <epenet@infinityccs.com>,TRUE,1
+johnsturgeon_greatfootballpool,E402,johnofcamas <john.sturgeon@me.com>,TRUE,1
+BumSan_pv_modbus,toolbox,Sebastian Boehm <s.boehm@pint.de>,TRUE,1
+pypeit_PypeIt,requests,profxj <xavier@ucolick.org>,TRUE,1
+dlmiddlecote_openapi-collector,requests,Daniel Middlecote <daniel@ometria.com>,TRUE,1
+skyzh_canvas_grab,progress,SkyZH <iSkyZH@163.com>,TRUE,1
+Alexd14_ntiles-backtester,matplotlib,Alexd14 <32649372+Alexd14@users.noreply.github.com>,TRUE,1
+sharppy_SHARPpy,matplotlib,wblumberg <wblumberg@ou.edu>,TRUE,1
+cyclikal_cyckei,AppKit,Gabriel Ewig <gabo.ewig@gmail.com>,TRUE,1
+inabhi9_drf-cloudstorage,example,inabhi9 <in.abhi9@gmail.com>,TRUE,1

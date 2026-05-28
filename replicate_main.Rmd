@@ -1,0 +1,1330 @@
+
+### load data and remove outliers
+```{r}
+library(tidyverse)
+library('corrr')
+library(ggcorrplot)
+library(car)
+
+core_post = '' # ['_eighty', ''] # different core developer identification approach
+month_period = '12' # [6, 12, 24] different length of interaction period
+data_novelty = read_csv('./data/repo_property_novelty_com_Python_before_2022_vd_256.csv')
+
+data_network_commit = read_csv(sprintf('./data/network_stats_com_Python_before_2022_month_%s_act_commit%s.csv', month_period, core_post))
+data_network_issue = read_csv(sprintf('./data/network_stats_com_Python_before_2022_month_%s_act_issue%s.csv', month_period, core_post))
+data_network_star = read_csv(sprintf('./data/network_stats_com_Python_before_2022_month_%s_act_star%s.csv', month_period, core_post))
+
+
+data_meta = read_csv(sprintf('./data/repo_meta_com_Python_before_2022%s.csv', core_post))
+
+
+data_validation = read_csv('./data/repo_validate_novelty_b_10.csv')
+data_validation_1y = read_csv('./data/repo_validate_novelty_b_10_within_365d.csv', col_select = c('pk_sim_mean_valid_1y', 'package_count_valid_1y', 'repo_slug'))
+
+df_project_m = merge(data_novelty, data_network_commit, by = 'repo_slug')
+df_project_m = merge(df_project_m, data_network_issue, by = 'repo_slug')
+df_project_m = merge(df_project_m, data_network_star, by = 'repo_slug')
+df_project_m = merge(df_project_m, data_validation, by = 'repo_slug')
+df_project_m = merge(df_project_m, data_validation_1y, by = 'repo_slug')
+
+df_project_m = merge(df_project_m, data_meta, by = 'repo_slug')
+
+df_project_m = subset(df_project_m, earliest_commit_year >= 2008 & pk_sim_mean > -999 & earliest_commit_year < 2021 & pk_sim_mean_valid > -999)
+
+df_project_m$atypicality = -df_project_m$pk_sim_mean 
+
+
+hist(df_project_m$pk_sim_mean)
+hist(log(df_project_m$owner_star_count_before + 1))
+hist(log(df_project_m$outdegree_commit + 1))
+hist(log(df_project_m$outdegree_issue + 1))
+hist(log(df_project_m$outdegree_star + 1))
+hist(log(df_project_m$package_count + 1))
+hist(df_project_m$core_dev_count)
+hist(log(df_project_m$core_dev_count+1))
+
+
+
+if ((core_post == '') && (month_period == '12')){
+  df_project_m_no_outlier = subset(df_project_m, pk_sim_mean > -0.2 & pk_sim_mean < 0.7 
+                                                & owner_star_count_before < exp(7)
+                                                & outdegree_commit < exp(4)
+                                                & outdegree_issue < exp(3)
+                                                & outdegree_star < exp(5)
+                                                & package_count < exp(3.5)
+                                                & core_dev_count < 6 & core_dev_count > 0
+                                                & diversity_commit < -0.3 
+                                                & diversity_issue < -0.15
+                                                & diversity_star < -0.1)
+  
+  
+
+}else if((core_post == '') && (month_period == '6')){
+  df_project_m_no_outlier = subset(df_project_m, pk_sim_mean > -0.2 & pk_sim_mean < 0.7 
+                                                & owner_star_count_before < exp(7)
+                                                & outdegree_commit < exp(3.5)
+                                                & outdegree_issue < exp(2)
+                                                & outdegree_star < exp(4)
+                                                & package_count < exp(3.5)
+                                                & core_dev_count < 6 & core_dev_count > 0
+                                                & diversity_commit < -0.3 
+                                                & diversity_issue < -0.15
+                                                & diversity_star < -0.1)
+  
+  
+}else if((core_post == '') && (month_period == '24')){
+  df_project_m_no_outlier = subset(df_project_m, pk_sim_mean > -0.2 & pk_sim_mean < 0.7 
+                                                & owner_star_count_before < exp(7)
+                                                & outdegree_commit < exp(4)
+                                                & outdegree_issue < exp(3)
+                                                & outdegree_star < exp(5)
+                                                & package_count < exp(4)
+                                                & core_dev_count < 6 & core_dev_count > 0
+                                                & diversity_commit < -0.25 
+                                                & diversity_issue < -0.1
+                                                & diversity_star < -0.1)
+  
+  
+}else if((core_post == '_eighty') && (month_period == '6')){
+  df_project_m_no_outlier = subset(df_project_m, pk_sim_mean > -0.2 & pk_sim_mean < 0.7 
+                                                & owner_star_count_before < exp(7)
+                                                & outdegree_commit < exp(4)
+                                                & outdegree_issue < exp(2.5)
+                                                & outdegree_star < exp(4)
+                                                & package_count < exp(4)
+                                                & core_dev_count < exp(2) & core_dev_count > 0
+                                                & diversity_commit < -0.25
+                                                & diversity_issue < -0.15
+                                                & diversity_star < -0.05)
+  
+  
+}else if((core_post == '_eighty') && (month_period == '12')){
+  df_project_m_no_outlier = subset(df_project_m, pk_sim_mean > -0.2 & pk_sim_mean < 0.7 
+                                                & owner_star_count_before < exp(7)
+                                                & outdegree_commit < exp(4)
+                                                & outdegree_issue < exp(3)
+                                                & outdegree_star < exp(5)
+                                                & package_count < exp(4)
+                                                & core_dev_count < exp(2) & core_dev_count > 0
+                                                & diversity_commit < -0.2
+                                                & diversity_issue < -0.1
+                                                & diversity_star < -0.05)
+  
+  
+}else if((core_post == '_eighty') && (month_period == '24')){
+  df_project_m_no_outlier = subset(df_project_m, pk_sim_mean > -0.2 & pk_sim_mean < 0.7 
+                                                & owner_star_count_before < exp(7)
+                                                & outdegree_commit < exp(5)
+                                                & outdegree_issue < exp(3.5)
+                                                & outdegree_star < exp(5)
+                                                & package_count < exp(4)
+                                                & core_dev_count < exp(2) & core_dev_count > 0
+                                                & diversity_commit < -0.2
+                                                & diversity_issue < -0.1
+                                                & diversity_star < -0.05)
+  
+  
+}
+
+
+df_project_m_diversity_no_outlier = subset(df_project_m_no_outlier, diversity_commit > -999 & 
+                                              diversity_issue > -999 & 
+                                              diversity_star > -999)
+# Fang's metric for validation
+
+rm(data_novelty)
+rm(data_network_commit)
+rm(data_network_issue)
+rm(data_network_star)
+rm(data_meta)
+
+rm(df_project_m)
+
+
+```
+
+### Branch 1: run this when doing 1-year atypicality analysis for node2vec measurements (for replicating Table 8)
+```{r}
+df_project_m_no_outlier_has_1y = subset(df_project_m_no_outlier, pk_sim_mean_within_1_year > -999 & core_dev_one_year_count > 0)
+df_project_m_no_outlier_has_1y$atypicality = - df_project_m_no_outlier_has_1y$pk_sim_mean_within_1_year
+df_project_m_no_outlier_has_1y$package_count = df_project_m_no_outlier_has_1y$package_count_within_1_year
+df_project_m_no_outlier_has_1y$core_dev_count = df_project_m_no_outlier_has_1y$core_dev_one_year_count
+
+
+df_project_m_diversity_no_outlier_has_1y = subset(df_project_m_diversity_no_outlier, pk_sim_mean_within_1_year > -999 & core_dev_one_year_count > 0)
+df_project_m_diversity_no_outlier_has_1y$atypicality = - df_project_m_diversity_no_outlier_has_1y$pk_sim_mean_within_1_year
+df_project_m_diversity_no_outlier_has_1y$package_count = df_project_m_diversity_no_outlier_has_1y$package_count_within_1_year
+df_project_m_diversity_no_outlier_has_1y$core_dev_count = df_project_m_diversity_no_outlier_has_1y$core_dev_one_year_count
+
+
+
+
+df_project_m_no_outlier = df_project_m_no_outlier_has_1y
+df_project_m_diversity_no_outlier = df_project_m_diversity_no_outlier_has_1y
+```
+
+### Branch 2: run this when doing 1-year atypicality analysis for network reshuffle measurements (for replicating Table 9)
+```{r}
+df_project_m_no_outlier_has_1y = subset(df_project_m_no_outlier, pk_sim_mean_valid_1y > -999 & core_dev_one_year_count > 0)
+df_project_m_no_outlier_has_1y$atypicality = - df_project_m_no_outlier_has_1y$pk_sim_mean_valid_1y
+df_project_m_no_outlier_has_1y$package_count = df_project_m_no_outlier_has_1y$package_count_valid_1y
+df_project_m_no_outlier_has_1y$core_dev_count = df_project_m_no_outlier_has_1y$core_dev_one_year_count
+
+
+df_project_m_diversity_no_outlier_has_1y = subset(df_project_m_diversity_no_outlier, pk_sim_mean_valid_1y > -999 & core_dev_one_year_count > 0)
+df_project_m_diversity_no_outlier_has_1y$atypicality = - df_project_m_diversity_no_outlier_has_1y$pk_sim_mean_valid_1y
+df_project_m_diversity_no_outlier_has_1y$package_count = df_project_m_diversity_no_outlier_has_1y$package_count_valid_1y
+df_project_m_diversity_no_outlier_has_1y$core_dev_count = df_project_m_diversity_no_outlier_has_1y$core_dev_one_year_count
+
+
+
+
+df_project_m_no_outlier = df_project_m_no_outlier_has_1y
+df_project_m_diversity_no_outlier = df_project_m_diversity_no_outlier_has_1y
+
+```
+
+
+### Branch 3: run this when doing full period atypicality analysis for network reshuffle measurements (for replicating Table 11)
+```{r}
+
+df_project_m_no_outlier$atypicality = -df_project_m_no_outlier$pk_sim_mean_valid
+df_project_m_no_outlier$package_count = df_project_m_no_outlier$package_count_valid
+
+df_project_m_diversity_no_outlier$atypicality = -df_project_m_diversity_no_outlier$pk_sim_mean_valid
+df_project_m_diversity_no_outlier$package_count = df_project_m_diversity_no_outlier$package_count_valid
+```
+
+
+
+
+### Branch 4: run this when counting diversiy equals -1 (minimal possible) for projects with only one outdegree (for replicating Figure 6)
+```{r}
+
+t = df_project_m_diversity_no_outlier
+
+df_project_m_no_outlier$diversity_commit[
+  df_project_m_no_outlier$outdegree_commit < 2
+] <- -1
+
+df_project_m_no_outlier$diversity_issue[
+  df_project_m_no_outlier$outdegree_issue < 2
+] <- -1
+
+df_project_m_no_outlier$diversity_star[
+  df_project_m_no_outlier$outdegree_star < 2
+] <- -1
+
+df_project_m_diversity_no_outlier = subset(df_project_m_no_outlier, diversity_commit > -999 &
+                                              diversity_issue > -999 &
+                                              diversity_star > -999)
+
+# Save both diversity_star histograms into one PDF
+
+summary(t$diversity_star)
+pdf("./figure/diversity_star_hist_compare.pdf", width = 10, height = 5)
+par(mfrow = c(1, 2))
+hist(t$diversity_star,
+     main = "For samples have enough star activity",
+     xlab = "Div(Star)")
+
+hist(df_project_m_no_outlier$diversity_star,
+     main = "For the full sample, setting to -1 when needed",
+     xlab = "Div(Star)")
+dev.off()
+
+```
+
+
+
+
+### PCA construction for average and weak degrees, complete sample
+```{r}
+
+df_project_m_no_outlier$scaled_log_degree_colab_out = scale(log(df_project_m_no_outlier$outdegree_commit + 1))
+df_project_m_no_outlier$scaled_log_degree_issue_out = scale(log(df_project_m_no_outlier$outdegree_issue + 1))
+df_project_m_no_outlier$scaled_log_degree_star_out = scale(log(df_project_m_no_outlier$outdegree_star + 1))
+
+
+
+
+variable_out_degree = df_project_m_no_outlier[, c('scaled_log_degree_colab_out', 'scaled_log_degree_issue_out',  'scaled_log_degree_star_out')]
+
+
+pca_out_degree = prcomp(variable_out_degree)
+
+princomp(variable_out_degree)
+
+summary(pca_out_degree)
+
+pca_out_degree$rotation
+
+if (pca_out_degree$rotation["scaled_log_degree_star_out", 1] < 0) {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 1] < 0)
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_colab_out", 1] < 0)
+
+  df_project_m_no_outlier$ave_degree_out = -pca_out_degree$x[, 1]
+
+} else {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 1] > 0)
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_colab_out", 1] > 0)
+
+  df_project_m_no_outlier$ave_degree_out = pca_out_degree$x[, 1]
+}
+
+if (pca_out_degree$rotation["scaled_log_degree_star_out", 2] < 0) {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_star_out", 2] < pca_out_degree$rotation["scaled_log_degree_issue_out", 2])
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 2] < pca_out_degree$rotation["scaled_log_degree_colab_out", 2])
+
+  df_project_m_no_outlier$weakness_out = -pca_out_degree$x[, 2]
+
+} else {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_star_out", 2] > pca_out_degree$rotation["scaled_log_degree_issue_out", 2])
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 2] > pca_out_degree$rotation["scaled_log_degree_colab_out", 2])
+
+  df_project_m_no_outlier$weakness_out = pca_out_degree$x[, 2]
+}
+
+```
+
+### PCA construction for average and weak degrees, for samples with valid diversity metric
+
+```{r}
+
+
+
+df_project_m_diversity_no_outlier$scaled_log_degree_colab_out = scale(log(df_project_m_diversity_no_outlier$outdegree_commit + 1))
+
+df_project_m_diversity_no_outlier$scaled_log_degree_issue_out = scale(log(df_project_m_diversity_no_outlier$outdegree_issue + 1))
+
+
+df_project_m_diversity_no_outlier$scaled_log_degree_star_out = scale(log(df_project_m_diversity_no_outlier$outdegree_star + 1))
+
+
+
+
+variable_out_degree = df_project_m_diversity_no_outlier[, c('scaled_log_degree_colab_out', 'scaled_log_degree_issue_out', 'scaled_log_degree_star_out')]
+
+pca_out_degree = prcomp(variable_out_degree)
+
+princomp(variable_out_degree)
+
+summary(pca_out_degree)
+
+pca_out_degree$rotation
+
+if (pca_out_degree$rotation["scaled_log_degree_star_out", 1] < 0) {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 1] < 0)
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_colab_out", 1] < 0)
+
+  df_project_m_diversity_no_outlier$ave_degree_out = -pca_out_degree$x[, 1]
+
+} else {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 1] > 0)
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_colab_out", 1] > 0)
+
+  df_project_m_diversity_no_outlier$ave_degree_out = pca_out_degree$x[, 1]
+}
+
+
+if (pca_out_degree$rotation["scaled_log_degree_star_out", 2] < 0) {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_star_out", 2] < pca_out_degree$rotation["scaled_log_degree_issue_out", 2])
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 2] < pca_out_degree$rotation["scaled_log_degree_colab_out", 2])
+
+  df_project_m_diversity_no_outlier$weakness_out = -pca_out_degree$x[, 2]
+} else {
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_star_out", 2] > pca_out_degree$rotation["scaled_log_degree_issue_out", 2])
+  stopifnot(pca_out_degree$rotation["scaled_log_degree_issue_out", 2] > pca_out_degree$rotation["scaled_log_degree_colab_out", 2])
+
+  df_project_m_diversity_no_outlier$weakness_out = pca_out_degree$x[, 2]
+}
+
+
+
+```
+
+
+
+
+
+
+
+
+### PCA construction for average and weak diversity, for samples with valid diversity metric
+
+```{r}
+
+
+
+
+df_project_m_diversity_no_outlier$scaled_diversity_commit = scale(df_project_m_diversity_no_outlier$diversity_commit)
+df_project_m_diversity_no_outlier$scaled_diversity_issue = scale(df_project_m_diversity_no_outlier$diversity_issue)
+
+df_project_m_diversity_no_outlier$scaled_diversity_star = scale(df_project_m_diversity_no_outlier$diversity_star)
+
+
+
+variable_out_diversity = df_project_m_diversity_no_outlier[, c('scaled_diversity_commit', 'scaled_diversity_issue', 'scaled_diversity_star')]
+pca_out_diversity = prcomp(variable_out_diversity)
+
+princomp(variable_out_diversity)
+
+summary(pca_out_diversity)
+
+pca_out_diversity$rotation
+
+
+if (pca_out_diversity$rotation["scaled_diversity_star", 1] < 0) {
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_issue", 1] < 0)
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_commit", 1] < 0)
+
+  df_project_m_diversity_no_outlier$ave_diversity_out = -pca_out_diversity$x[, 1]
+} else {
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_issue", 1] > 0)
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_commit", 1] > 0)
+  df_project_m_diversity_no_outlier$ave_diversity_out = pca_out_diversity$x[, 1]
+}
+
+
+if (pca_out_diversity$rotation["scaled_diversity_star", 2] < 0) {
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_star", 2] < pca_out_diversity$rotation["scaled_diversity_issue", 2])
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_issue", 2] < pca_out_diversity$rotation["scaled_diversity_commit", 2])
+
+  df_project_m_diversity_no_outlier$weakness_diversity = -pca_out_diversity$x[, 2]
+} else {
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_star", 2] > pca_out_diversity$rotation["scaled_diversity_issue", 2])
+  stopifnot(pca_out_diversity$rotation["scaled_diversity_issue", 2] > pca_out_diversity$rotation["scaled_diversity_commit", 2])
+
+  df_project_m_diversity_no_outlier$weakness_diversity = pca_out_diversity$x[, 2]
+}
+
+
+
+
+
+```
+
+
+### Outcome variable not scaled, Replicating Table 3, Table 5, Table 13, Table 14, Table 15
+```{r}
+m_degree_all_model = lm(atypicality~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_no_outlier)
+vif(m_degree_all_model)
+summary(m_degree_all_model)
+
+
+m_degree_dv_model = lm(atypicality~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_degree_dv_model)
+summary(m_degree_dv_model)
+
+
+
+
+m_diversity_dv_model = lm(atypicality~
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_dv_model)
+summary(m_diversity_dv_model)
+
+
+m_diversity_degree_dv_model = lm(atypicality~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_degree_dv_model)
+summary(m_diversity_degree_dv_model)
+
+```
+
+
+
+### Outcome variable scaled, Replicating Table 8, Table 9, Table 10, Table 11
+```{r}
+m_degree_all_model_scale = lm(scale(atypicality)~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_no_outlier)
+vif(m_degree_all_model_scale)
+summary(m_degree_all_model_scale)
+
+
+m_degree_dv_model_scale = lm(scale(atypicality)~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_degree_dv_model_scale)
+summary(m_degree_dv_model_scale)
+
+
+
+
+m_diversity_dv_model_scale = lm(scale(atypicality)~
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_dv_model_scale)
+summary(m_diversity_dv_model_scale)
+
+
+m_diversity_degree_dv_model_scale = lm(scale(atypicality)~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_degree_dv_model_scale)
+summary(m_diversity_degree_dv_model_scale)
+
+```
+
+
+### Model with core developer fixed effects, Replicating  Table 12
+```{r}
+library(fixest)
+
+# Author membership file (long format: repo_slug, core_author)
+# Produced by get_project_act_old.py via imple_pk_repo_lower2core_author_list_com_*_contain.json
+df_author_membership = read_csv(sprintf('./data/repo_core_author_membership_com_Python_before_2022%s.csv', core_post))
+
+# --- Reproducible random sample of 100 repos with their core-author list ---
+# The membership file is long format (one row per repo_slug x core_author), so
+# first inner-join with the analysis frame, then collapse to one row per repo:
+# core_author becomes a '; '-joined list, plus the repo's core_dev_count.
+# set.seed() fixes the draw so the saved sample is replicable.
+set.seed(42)
+df_membership_by_repo = df_author_membership %>%
+  inner_join(df_project_m_diversity_no_outlier %>% select(repo_slug, core_dev_count),
+             by = 'repo_slug') %>%
+  group_by(repo_slug, core_dev_count) %>%
+  summarise(core_author = paste(sort(unique(core_author)), collapse = '; '),
+            .groups = 'drop')
+df_membership_sample_100 = df_membership_by_repo %>%
+  slice_sample(n = 100) %>%
+  select(repo_slug, core_author, core_dev_count)
+write.csv(df_membership_sample_100,
+          './manual_sample/repo_core_author_membership_sample_100.csv',
+          row.names = FALSE)
+
+# Keep one row per repo. Pivot membership to binary indicators (cd_<login>),
+# one column per appearing core author, then merge onto the analysis frame.
+# Authors appearing in only one sample project are dropped: a singleton dummy
+# perfectly fits its one observation and adds nothing.
+df_author_in_sample = subset(df_author_membership,
+                             repo_slug %in% df_project_m_diversity_no_outlier$repo_slug)
+author_counts = df_author_in_sample %>% count(core_author)
+df_author_in_sample = subset(df_author_in_sample,
+                             core_author %in% author_counts$core_author[author_counts$n >= 2])
+
+df_author_wide = df_author_in_sample %>%
+  mutate(.val = 1L) %>%
+  pivot_wider(names_from = core_author, values_from = .val,
+              values_fill = 0L, names_prefix = 'cd_')
+names(df_author_wide) = make.names(names(df_author_wide))
+
+df_project_m_diversity_no_outlier_fe = df_project_m_diversity_no_outlier %>%
+  left_join(df_author_wide, by = 'repo_slug') %>%
+  mutate(across(starts_with('cd_'), ~ replace_na(.x, 0L)))
+
+# ..("^cd_") expands to every cd_* column in the data, so the formula looks just
+# like the lm() original with one extra term standing in for the author dummies.
+# earliest_commit_year is absorbed via |. Author dummies are estimated but hidden
+# from display via summary(..., keep = ...). One row per repo, no clustering.
+
+
+
+# --- m_degree_dv_model with author FE ---
+m_degree_dv_model_author_fe = feols(atypicality~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                  ..("^cd_") | earliest_commit_year
+                                  ,data = df_project_m_diversity_no_outlier_fe)
+.smry_degree_author_fe = summary(m_degree_dv_model_author_fe)
+.coef_degree_author_fe = .smry_degree_author_fe$coeftable[!grepl('^cd_', rownames(.smry_degree_author_fe$coeftable)), ]
+printCoefmat(.coef_degree_author_fe, signif.stars = TRUE, has.Pvalue = TRUE)
+
+fitstat(m_degree_dv_model_author_fe, c('r2', 'ar2', 'wr2', 'war2'))
+ 
+# --- m_diversity_dv_model with author FE ---
+m_diversity_dv_model_author_fe = feols(atypicality~
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                  ..("^cd_") | earliest_commit_year
+                                  ,data = df_project_m_diversity_no_outlier_fe)
+.smry_diversity_author_fe = summary(m_diversity_dv_model_author_fe)
+.coef_diversity_author_fe = .smry_diversity_author_fe$coeftable[!grepl('^cd_', rownames(.smry_diversity_author_fe$coeftable)), ]
+printCoefmat(.coef_diversity_author_fe, signif.stars = TRUE, has.Pvalue = TRUE)
+fitstat(m_diversity_dv_model_author_fe, c('r2', 'ar2', 'wr2', 'war2'))
+
+
+m_diversity_degree_dv_model_author_fe = feols(atypicality~
+                                  ave_degree_out +
+                                  weakness_out +
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                  ..("^cd_") | earliest_commit_year
+                                  ,data = df_project_m_diversity_no_outlier_fe)
+# car::vif() does not support fixest objects, so it is omitted here.
+# Note: summary.fixest() has no `keep` arg (that's etable()'s) — it would dump
+# every cd_* coefficient. Filter the coeftable manually to hide author dummies,
+# then use printCoefmat() so significance stars are still rendered.
+.smry_author_fe = summary(m_diversity_degree_dv_model_author_fe)
+.coef_author_fe = .smry_author_fe$coeftable[!grepl('^cd_', rownames(.smry_author_fe$coeftable)), ]
+printCoefmat(.coef_author_fe, signif.stars = TRUE, has.Pvalue = TRUE)
+
+fitstat(m_diversity_degree_dv_model_author_fe, c('r2', 'ar2', 'wr2', 'war2'))
+
+
+
+m_diversity_direct = feols(atypicality~
+                                  scale(diversity_commit) +
+                                  scale(diversity_star) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                  ..("^cd_") | earliest_commit_year
+                                  ,data = df_project_m_diversity_no_outlier_fe)
+# car::vif() does not support fixest objects, so it is omitted here.
+# Note: summary.fixest() has no `keep` arg (that's etable()'s) — it would dump
+# every cd_* coefficient. Filter the coeftable manually to hide author dummies,
+# then use printCoefmat() so significance stars are still rendered.
+.smry_author_fe = summary(m_diversity_direct)
+.coef_author_fe = .smry_author_fe$coeftable[!grepl('^cd_', rownames(.smry_author_fe$coeftable)), ]
+printCoefmat(.coef_author_fe, signif.stars = TRUE, has.Pvalue = TRUE)
+
+fitstat(m_diversity_direct, c('r2', 'ar2', 'wr2', 'war2'))
+
+```
+
+### Variable co-variance, replicating Table 6
+```{r}
+library(xtable)
+df_project_m_diversity_no_outlier$owner_star_log = log(df_project_m_diversity_no_outlier$owner_star_count_before + 1)
+df_project_m_diversity_no_outlier$core_dev_count_log = log(df_project_m_diversity_no_outlier$core_dev_count)
+df_project_m_diversity_no_outlier$package_count_log = log(df_project_m_diversity_no_outlier$package_count)
+
+df_project_m_diversity_no_outlier$outdegree_commit_log = log(df_project_m_diversity_no_outlier$outdegree_commit + 1)
+df_project_m_diversity_no_outlier$outdegree_issue_log = log(df_project_m_diversity_no_outlier$outdegree_issue + 1)
+df_project_m_diversity_no_outlier$outdegree_star_log = log(df_project_m_diversity_no_outlier$outdegree_star + 1)
+
+vars_degree <- df_project_m_diversity_no_outlier[, c(
+  
+  "outdegree_commit_log",
+  "outdegree_issue_log",
+  "outdegree_star_log",
+  "owner_star_log",
+  "core_dev_count_log",
+  "package_count_log",
+  "owner_org"
+)]
+vars_diversity <- df_project_m_diversity_no_outlier[, c(
+  
+  "diversity_commit",
+  "diversity_issue",
+  "diversity_star",
+  "owner_star_log",
+  "core_dev_count_log",
+  "package_count_log",
+  "owner_org"
+)]
+
+cor(vars_degree, use = "complete.obs")
+cor(vars_diversity, use = "complete.obs")
+
+
+vars_all <- df_project_m_diversity_no_outlier[, c(
+  "outdegree_commit_log",
+  "outdegree_issue_log",
+  "outdegree_star_log",
+  "diversity_commit",
+  "diversity_issue",
+  "diversity_star",
+  "owner_org",
+  "owner_star_log",
+  "core_dev_count_log",
+  "package_count_log"
+)]
+
+cor(vars_all, use = "complete.obs")
+
+cor_table <- cor(vars_all, use = "complete.obs")
+
+print(
+  xtable(round(cor_table, 3),
+         caption = "Correlation Matrix",
+         label = "tab:correlation"),
+  type = "latex",
+  include.rownames = TRUE
+)
+```
+
+
+### Direct variables in regression models, replicating Table 7
+```{r}
+
+m_diversity_only_commit_diversity_scaled = lm(atypicality~
+                                  scale(diversity_commit) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_commit_diversity_scaled)
+summary(m_diversity_only_commit_diversity_scaled)
+
+
+m_diversity_only_star_diversity_scaled = lm(atypicality~
+                                  scale(diversity_star) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_star_diversity_scaled)
+summary(m_diversity_only_star_diversity_scaled)
+
+m_diversity_only_commit_diversity_raw = lm(atypicality~
+                                  diversity_commit +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_commit_diversity_raw)
+summary(m_diversity_only_commit_diversity_raw)
+
+
+
+m_diversity_only_star_diversity_raw = lm(atypicality~
+                                  diversity_star +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_star_diversity_raw)
+summary(m_diversity_only_star_diversity_raw)
+
+
+
+m_diversity_only_commit_diversity_raw_with_degree = lm(atypicality~
+                                  log(outdegree_commit + 1)+
+                                  diversity_commit +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_commit_diversity_raw_with_degree)
+summary(m_diversity_only_commit_diversity_raw_with_degree)
+
+m_diversity_only_star_diversity_raw_with_degree = lm(atypicality~
+                                  log(outdegree_star + 1)+
+                                  diversity_star +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_star_diversity_raw_with_degree)
+summary(m_diversity_only_star_diversity_raw_with_degree)
+
+
+
+
+
+m_diversity_only_commit_diversity_scaled_with_degree = lm(atypicality~
+                                  log(outdegree_commit + 1)+
+                                  scale(diversity_commit) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_commit_diversity_scaled_with_degree)
+summary(m_diversity_only_commit_diversity_scaled_with_degree)
+
+m_diversity_only_star_diversity_scaled_with_degree = lm(atypicality~
+                                  log(outdegree_star + 1)+
+                                  scale(diversity_star) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_only_star_diversity_scaled_with_degree)
+summary(m_diversity_only_star_diversity_scaled_with_degree)
+
+
+
+
+
+
+m_diversity_combine_direct_no_commit = lm(atypicality~
+                                  scale(log(outdegree_issue + 1)) +
+                                  scale(log(outdegree_star + 1)) +
+                                  scale(diversity_issue) +
+                                  scale(diversity_star) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_combine_direct_no_commit)
+summary(m_diversity_combine_direct_no_commit)
+
+
+m_diversity_combine_direct_no_issue = lm(atypicality~
+                                  scale(log(outdegree_commit + 1)) +
+                                  scale(log(outdegree_star + 1)) +
+                                  scale(diversity_commit) +
+                                  scale(diversity_star) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_combine_direct_no_issue)
+summary(m_diversity_combine_direct_no_issue)
+
+m_diversity_combine_direct_no_star_degree = lm(atypicality~
+                                  scale(log(outdegree_commit + 1)) +
+                                  scale(diversity_commit) +
+                                  scale(diversity_star) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_combine_direct_no_star_degree)
+summary(m_diversity_combine_direct_no_star_degree)
+
+
+
+m_diversity_combine_direct = lm(atypicality~
+                                  scale(log(outdegree_commit + 1)) +
+                                  scale(log(outdegree_issue + 1)) +
+                                  scale(log(outdegree_star + 1)) +
+                                  scale(diversity_commit) +
+                                  scale(diversity_issue) +
+                                  scale(diversity_star) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_no_outlier)
+vif(m_diversity_combine_direct)
+summary(m_diversity_combine_direct)
+
+
+
+```
+
+
+### generate temp data to replicate Figure 5.a
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(broom)
+# Initialize an empty dataframe to store results
+results_df <- data.frame(year = integer(), ave_diversity_out.coef = numeric(), ave_diversity_out.lower_ci = numeric(), ave_diversity_out.upper_ci = numeric(), weakness_diversity.coef = numeric(), weakness_diversity.lower_ci = numeric(), weakness_diversity.upper_ci = numeric())
+
+# Loop over each year from 2008 to 2020
+for (year in 2008:2020) {
+  # Subset data for the current year
+  df_subset <- subset(df_project_m_diversity_no_outlier, earliest_commit_year == year)
+  
+  # Run the linear regression model
+  model <- lm(atypicality~   ave_diversity_out +
+                                  weakness_diversity +
+                                  log(package_count) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count)
+                                  ,data = df_subset)
+  
+  # Extract coefficients and confidence intervals for ave_degree_out and weakness_out
+  tidy_results <- tidy(model)
+  coef_ave_degree_out <- tidy_results[tidy_results$term == "ave_diversity_out", "estimate"]
+  ci_ave_degree_out <- confint(model, "ave_diversity_out")
+  coef_weakness_out <- tidy_results[tidy_results$term == "weakness_diversity", "estimate"]
+  ci_weakness_out <- confint(model, "weakness_diversity")
+  
+  # Append results to the dataframe
+  results_df <- rbind(results_df, data.frame(year = year, ave_diversity_out.coef = coef_ave_degree_out, ave_diversity_out.lower_ci = ci_ave_degree_out[1], ave_diversity_out.upper_ci = ci_ave_degree_out[2], weakness_diversity.coef = coef_weakness_out, weakness_diversity.lower_ci = ci_weakness_out[1], weakness_diversity.upper_ci = ci_weakness_out[2]))
+}
+
+
+colnames(results_df)[colnames(results_df) == "estimate"] <- "ave_diversity_out.coef"
+colnames(results_df)[colnames(results_df) == "estimate.1"] <- "weakness_diversity.coef"
+
+
+# Save results to a CSV file
+write.csv(results_df, "./temp_data/results_diversity_div_sample_yearly_cohort.csv", row.names = FALSE)
+
+
+```
+
+
+### visualize figure 5.a
+```{r}
+
+# Load required libraries
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+# Read the CSV file
+year_cut_off = 2010
+
+data <- read.csv("./temp_data/results_diversity_div_sample_yearly_cohort.csv")
+
+# Convert the data to long format for plotting
+df_long <- melt(data, id.vars = "year", variable.name = "variable_name")
+
+# Split the variable_name column into coef, lower_ci, and upper_ci
+df_long <- cbind(df_long, colsplit(df_long$variable_name, "\\.", c("variable", "stat")))
+
+# Drop the original variable_name column
+df_long <- df_long[, -which(names(df_long) == "variable_name")]
+
+
+# Rename columns
+colnames(df_long) <- c("year", "value", "Varible", "category")
+
+df_wide <- spread(df_long, key = category, value = value)
+df_wide = subset(df_wide, year > year_cut_off)
+
+df_wide[df_wide$Varible == "ave_diversity_out", "year"] <- df_wide[df_wide$Varible == "ave_diversity_out", "year"] - 0.1
+df_wide[df_wide$Varible == "ave_degree_out", "year"] <- df_wide[df_wide$Varible == "ave_degree_out", "year"] - 0.1
+
+df_wide[df_wide == 'ave_degree_out'] = 'Average Degree'
+df_wide[df_wide == 'ave_diversity_out'] = 'Average Diversity'
+df_wide[df_wide == 'weakness_out'] = 'Degree from Weak Tie'
+df_wide[df_wide == 'weakness_diversity'] = 'Diversity from Weak Tie'
+
+
+linewidth = 2
+x_ticks <- seq(year_cut_off + 1, 2020, by = 1)
+
+# Plot the data
+ggplot(df_wide, aes(x = year, y = coef, color = Varible)) +
+  geom_line(size = linewidth) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci), width = 0.5, size = linewidth) +
+  labs(title = "",
+       x = "Year",
+       y = "Estimated Coefficient",
+       color = "Variables") +
+    geom_hline(yintercept=0, linetype = 'dashed', color = 'gray', size = linewidth) +
+  scale_color_manual(values = c("Average Degree" = "blue", "Average Diversity" = "blue", "Diversity from Weak Tie" = "red", "Degree from Weak Tie" = "red")) +
+  scale_x_continuous(breaks = x_ticks)+
+  theme_classic()+
+  theme(legend.text = element_text(size=26),
+        axis.text.x =element_text(size=28),
+        axis.text.y =element_text(size=28),
+        axis.title.x=element_text(size=28),
+        axis.title.y=element_text(size=28),
+        legend.title=element_text(size=28))
+
+ggsave(file="./figure/diversity_div_yearly.pdf", width=20, height=9, dpi=300)
+
+
+```
+
+
+### generate temp data to replicate Figure 5.b
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(broom)
+# Initialize an empty dataframe to store results
+results_df <- data.frame(core_dev_count = integer(), ave_diversity_out.coef = numeric(), ave_diversity_out.lower_ci = numeric(), ave_diversity_out.upper_ci = numeric(), weakness_diversity.coef = numeric(), weakness_diversity.lower_ci = numeric(), weakness_diversity.upper_ci = numeric())
+
+t1 <- subset(df_project_m_diversity_no_outlier, core_dev_count == 1)
+summary(t1$ave_diversity_out)
+
+t2 <- subset(df_project_m_diversity_no_outlier, core_dev_count == 2)
+summary(t2$ave_diversity_out)
+
+t3 <- subset(df_project_m_diversity_no_outlier, core_dev_count == 3)
+summary(t3$ave_diversity_out)
+
+t4 <- subset(df_project_m_diversity_no_outlier, core_dev_count == 4)
+summary(t4$ave_diversity_out)
+
+t5 <- subset(df_project_m_diversity_no_outlier, core_dev_count == 5)
+summary(t5$ave_diversity_out)
+
+
+for (core_dev_count_target in 1:5) {
+  # Subset data for the current year
+  df_subset <- subset(df_project_m_diversity_no_outlier, core_dev_count == core_dev_count_target)
+  
+  # Run the linear regression model
+  model <- lm(atypicality~   ave_diversity_out +
+                                  weakness_diversity +
+                                  log(package_count) +
+                                  owner_org +
+                                  log(owner_star_count_before + 1) +
+                                  as.factor(earliest_commit_year)
+                                  ,data = df_subset)
+  
+  # Extract coefficients and confidence intervals for ave_degree_out and weakness_out
+  tidy_results <- tidy(model)
+  coef_ave_degree_out <- tidy_results[tidy_results$term == "ave_diversity_out", "estimate"]
+  ci_ave_degree_out <- confint(model, "ave_diversity_out")
+  coef_weakness_out <- tidy_results[tidy_results$term == "weakness_diversity", "estimate"]
+  ci_weakness_out <- confint(model, "weakness_diversity")
+  
+  # Append results to the dataframe
+  results_df <- rbind(results_df, data.frame(core_dev_count = core_dev_count_target, ave_diversity_out.coef = coef_ave_degree_out, ave_diversity_out.lower_ci = ci_ave_degree_out[1], ave_diversity_out.upper_ci = ci_ave_degree_out[2], weakness_diversity.coef = coef_weakness_out, weakness_diversity.lower_ci = ci_weakness_out[1], weakness_diversity.upper_ci = ci_weakness_out[2]))
+}
+
+
+colnames(results_df)[colnames(results_df) == "estimate"] <- "ave_diversity_out.coef"
+colnames(results_df)[colnames(results_df) == "estimate.1"] <- "weakness_diversity.coef"
+
+
+# Save results to a CSV file
+write.csv(results_df, "./temp_data/results_diversity_div_sample_core_cohort.csv", row.names = FALSE)
+
+
+```
+
+
+
+### visualize figure 5.b
+```{r}
+
+# Load required libraries
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+# Read the CSV file
+data <- read.csv("./temp_data/results_diversity_div_sample_core_cohort.csv")
+
+# Convert the data to long format for plotting
+df_long <- melt(data, id.vars = "core_dev_count", variable.name = "variable_name")
+
+# Split the variable_name column into coef, lower_ci, and upper_ci
+df_long <- cbind(df_long, colsplit(df_long$variable_name, "\\.", c("variable", "stat")))
+
+# Drop the original variable_name column
+df_long <- df_long[, -which(names(df_long) == "variable_name")]
+
+
+# Rename columns
+colnames(df_long) <- c("core_dev_count", "value", "Varible", "category")
+
+df_wide <- spread(df_long, key = category, value = value)
+
+df_wide[df_wide$Varible == "ave_diversity_out", "core_dev_count"] <- df_wide[df_wide$Varible == "ave_diversity_out", "core_dev_count"] - 0.1
+df_wide[df_wide$Varible == "ave_degree_out", "core_dev_count"] <- df_wide[df_wide$Varible == "ave_degree_out", "core_dev_count"] - 0.1
+
+df_wide[df_wide == 'ave_degree_out'] = 'Average Degree'
+df_wide[df_wide == 'ave_diversity_out'] = 'Average Diversity'
+df_wide[df_wide == 'weakness_out'] = 'Degree from Weak Tie'
+df_wide[df_wide == 'weakness_diversity'] = 'Diversity from Weak Tie'
+
+
+linewidth = 2
+x_ticks <- seq(1, 5, by = 1)
+
+# Plot the data
+ggplot(df_wide, aes(x = core_dev_count, y = coef, color = Varible)) +
+  geom_line(size = linewidth) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci), width = 0.5, size = linewidth) +
+  labs(title = "",
+       x = "Core Developer Count",
+       y = "Estimated Coefficient",
+       color = "Variables") +
+    geom_hline(yintercept=0, linetype = 'dashed', color = 'gray', size = linewidth) +
+  scale_color_manual(values = c("Average Degree" = "blue", "Average Diversity" = "blue", "Diversity from Weak Tie" = "red", "Degree from Weak Tie" = "red")) +
+  scale_x_continuous(breaks = x_ticks)+
+  theme_classic()+
+  theme(legend.text = element_text(size=26),
+        axis.text.x =element_text(size=28),
+        axis.text.y =element_text(size=28),
+        axis.title.x=element_text(size=28),
+        axis.title.y=element_text(size=28),
+        legend.title=element_text(size=28))
+
+
+
+ggsave(file="./figure/diversity_div_sample_core_cohort.pdf", width=20, height=9, dpi=300)
+
+
+```
+
+
+
+### generate temp data to replicate Figure 5.c
+
+```{r}
+library(dplyr)
+library(broom)
+df_project_m_diversity_org = subset(df_project_m_diversity_no_outlier, owner_org == TRUE)
+df_project_m_diversity_ind = subset(df_project_m_diversity_no_outlier, owner_org == FALSE)
+
+m_div_dv_model_org = lm(atypicality~
+
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_org)
+
+
+m_div_dv_model_ind = lm(atypicality~
+
+                                  ave_diversity_out +
+                                  weakness_diversity +
+                                  log(owner_star_count_before + 1) +
+                                  log(core_dev_count) +
+                                  log(package_count) +
+
+                                   as.factor(earliest_commit_year)
+                                  ,data = df_project_m_diversity_ind)
+
+
+
+### diversity
+
+
+results_df <- data.frame(category = integer(), ave_degree_out.coef = numeric(), ave_degree_out.lower_ci = numeric(), ave_degree_out.upper_ci = numeric(), weakness_out.coef = numeric(), weakness_out.lower_ci = numeric(), weakness_out.upper_ci = numeric())
+# 0 for org, 1 for ind
+for (model_cat_pair in list(list(m_div_dv_model_org, 0), list(m_div_dv_model_ind, 1))){
+model = model_cat_pair[[1]]
+cat = model_cat_pair[[2]]
+
+tidy_results <- tidy(model)
+coef_ave_degree_out <- tidy_results[tidy_results$term == "ave_diversity_out", "estimate"]
+ci_ave_degree_out <- confint(model, "ave_diversity_out")
+coef_weakness_out <- tidy_results[tidy_results$term == "weakness_diversity", "estimate"]
+ci_weakness_out <- confint(model, "weakness_diversity")
+
+# Append results to the dataframe
+results_df <- rbind(results_df, data.frame(category = cat, ave_diversity_out.coef = coef_ave_degree_out, ave_diversity_out.lower_ci = ci_ave_degree_out[1], ave_diversity_out.upper_ci = ci_ave_degree_out[2], weakness_diversity.coef = coef_weakness_out, weakness_diversity.lower_ci = ci_weakness_out[1], weakness_diversity.upper_ci = ci_weakness_out[2]))
+}
+
+
+colnames(results_df)[colnames(results_df) == "estimate"] <- "ave_diversity_out.coef"
+colnames(results_df)[colnames(results_df) == "estimate.1"] <- "weakness_diversity.coef"
+
+
+write.csv(results_df, "./temp_data/results_div_org_cohort.csv", row.names = FALSE)
+
+```
+
+
+
+
+
+
+
+
+
+
+### visualize figure 5.c
+```{r}
+
+# Load required libraries
+library(ggplot2)
+library(tidyr)
+library(reshape2)
+# Read the CSV file
+data <- read.csv("./temp_data/results_div_org_cohort.csv")
+
+# Convert the data to long format for plotting
+df_long <- melt(data, id.vars = "category", variable.name = "variable_name")
+
+# Split the variable_name column into coef, lower_ci, and upper_ci
+df_long <- cbind(df_long, colsplit(df_long$variable_name, "\\.", c("variable", "stat")))
+
+# Drop the original variable_name column
+df_long <- df_long[, -which(names(df_long) == "variable_name")]
+
+
+# Rename columns
+colnames(df_long) <- c("owner_type", "value", "Varible", "category")
+
+df_wide <- spread(df_long, key = category, value = value)
+
+df_wide[df_wide$Varible == "ave_diversity_out", "owner_type"] <- df_wide[df_wide$Varible == "ave_diversity_out", "owner_type"] - 0.1
+df_wide[df_wide$Varible == "ave_degree_out", "owner_type"] <- df_wide[df_wide$Varible == "ave_degree_out", "owner_type"] - 0.1
+
+df_wide[df_wide == 'ave_degree_out'] = 'Average Degree'
+df_wide[df_wide == 'ave_diversity_out'] = 'Average Diversity'
+df_wide[df_wide == 'weakness_out'] = 'Degree from Weak Tie'
+df_wide[df_wide == 'weakness_diversity'] = 'Diversity from Weak Tie'
+
+
+linewidth = 2
+x_ticks <- seq(0, 1, by = 1)
+# df_wide$owner_type = as.factor(df_wide$owner_type)
+# Plot the data
+ggplot(df_wide, aes(x = owner_type, y = coef, color = Varible)) +
+  # geom_line(size = linewidth) +
+  geom_errorbar(aes(ymin = lower_ci, ymax = upper_ci), width = 0.5, size = linewidth) +
+  labs(title = "",
+       x = "Owner Identity",
+       y = "Estimated Coefficient",
+       color = "Variables") +
+    geom_hline(yintercept=0, linetype = 'dashed', color = 'gray', size = linewidth) +
+  scale_color_manual(values = c("Average Degree" = "blue", "Average Diversity" = "blue", "Diversity from Weak Tie" = "red", "Degree from Weak Tie" = "red")) +
+  scale_x_continuous(breaks = x_ticks, labels= c('Org', 'Ind'))+
+  theme_classic()+
+  theme(legend.text = element_text(size=26),
+        axis.text.x =element_text(size=28),
+        axis.text.y =element_text(size=28),
+        axis.title.x=element_text(size=28),
+        axis.title.y=element_text(size=28),
+        legend.title=element_text(size=28))
+
+
+ggsave(file="./figure/diversity_div_sample_org_cohort.pdf", width=20, height=9, dpi=300)
+
+
+
+```
+
+
+
+
+### visualize figure 4, load
+```{r}
+
+data_validation_awesome_list = read_csv('./data/repo_property_novelty_awesome_list.csv')
+df_project_m_diversity_no_outlier = merge(df_project_m_diversity_no_outlier, data_validation_awesome_list, by = 'repo_slug')
+
+```
+
+
+### Compute Cohen's d
+```{r}
+
+library(effsize)
+awesome_project = subset(df_project_m_diversity_no_outlier, is_awesome == TRUE)
+no_awesome_project = subset(df_project_m_diversity_no_outlier, is_awesome == FALSE)
+cohen.d(
+  awesome_project$atypicality,
+  no_awesome_project$atypicality
+)
+
+```
+
+
+### generate Figure 4 and Table 16
+```{r}
+
+
+t_m = lm(atypicality ~
+                        is_awesome + 
+                        owner_org +
+                        log(owner_star_count_before + 1) +
+                        log(core_dev_count) +
+                        log(package_count) +
+                         as.factor(earliest_commit_year)
+                      ,data= df_project_m_diversity_no_outlier)
+summary(t_m)
+awesome_project = subset(df_project_m_diversity_no_outlier, is_awesome == TRUE)
+no_awesome_project = subset(df_project_m_diversity_no_outlier, is_awesome == FALSE)
+t.test(awesome_project$atypicality, no_awesome_project$atypicality) # t-test
+
+
+ggplot(df_project_m_diversity_no_outlier, aes(x = as.factor(is_awesome), y = atypicality)) +
+  geom_violin() +
+  labs(x = "Whether awesome projects", y = "Atypicality") +
+  # scale_fill_manual(values = c("FALSE" = "blue", "TRUE" = "red")) +
+  theme_minimal() + 
+  theme(panel.grid = element_blank(),
+        axis.line = element_line(color = "black"),  # Adds x and y axis lines
+            axis.title.x = element_text(size = 26),  # Adjust the size of the x-axis title
+    axis.title.y = element_text(size = 26),  # Adjust the size of the y-axis title
+    axis.text.x = element_text(size = 22),   # Adjust the size of the x-axis text
+    axis.text.y = element_text(size = 22)    # Adjust the size of the y-axis text
+            ) +
+  geom_hline(data = df_project_m_diversity_no_outlier %>%
+               group_by(is_awesome) %>%
+               summarise(mean_atypicality = mean(atypicality)),
+             aes(yintercept = mean_atypicality), linetype = "22", color = "gray", linewidth = 2) +
+stat_summary(fun.y=mean, geom="point", size=4, color="red")
+
+ggsave("./figure/awesome_atypicality.pdf", device = "pdf", width = 7, height = 5)
+
+```

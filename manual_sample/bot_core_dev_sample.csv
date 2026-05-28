@@ -1,0 +1,101 @@
+repo_slug,core_author,core_dev_count,"has_any_bot (1 for yes, 0 for no)",bot_count
+tqch/rails-armory,tqch; wangren09,2,0,0
+diagnijmegen/rse-gcapi,haimasree; HarmvZ; jmsmkn; miriam-groeneveld; pkcakeout,5,0,0
+jhermann/rudiments,jhermann,1,0,0
+dahlia/sqlalchemy-imageattach,dahlia,1,0,0
+yeasy/docker_practice,khs1994; yeasy,2,0,0
+django-cumulus/django-cumulus,ferrix; michelts; richleland; rizumu,4,0,0
+tlevine/open-data,tlevine,1,0,0
+guoxiaolu/video_predict,guoxiaolu,1,0,0
+renci-nrig/notary-service,ibaldin; mjstealey; yaxue1123,3,0,0
+mristin/rasaeco,mristin,1,0,0
+fabricesalvaire/book-browser,FabriceSalvaire,1,0,0
+tlocke/zish_python_antlr,tlocke,1,0,0
+zemogle/chemevol,haleygomez; zemogle,2,0,0
+garyongguanjie/deeplearningfinalproject,garyongguanjie; SamsonYuBaiJian,2,0,0
+isomeric/isomer-project,ri0t,1,0,0
+dlink/vreports,dlink,1,0,0
+soar-telescope/dragons-soar,b1quint; KathleenLabrie,2,0,0
+okfn/brand-manager,FrancoisDupayrat; Mibou; PhilippePlagnol,3,0,0
+1ucian0/qiskit-openqasm2,jwoehr,1,0,0
+eldeveloper/apocaqiime,ElDeveloper,1,0,0
+yueqiw/gqn-pytorch,yueqiw,1,0,0
+chrisvans/roastdoge,chrisvans,1,0,0
+lsst-sqre/nublado2,athornton; cbanek; rra; sqrbot,4,1,1
+0h-n0/tfdbonas,0h-n0,1,0,0
+toast38coza/djprocess,toast38coza,1,0,0
+heyman/rayter-site,heyman; peterjaric,2,0,0
+ovirt/fabric-ovirt,ifireball,1,0,0
+4pisky/simlightcurve,timstaley,1,0,0
+sabs-r3/module01_software_engineering,martinjrobins,1,0,0
+vertica/vertica-python,alexjikim; pedercandersen; sitingren; zer0n,4,0,0
+ndb796/pytorch-group-equivariant-cnn,ndb796,1,0,0
+primaeval/script.tvguide.fullscreen,im85288; primaeval,2,0,0
+pawlos/vsts-cli,pawlos,1,0,0
+curent/ltbvis,cuihantao; jinningwang; player1537; TheHashTableSlasher,4,0,0
+cbess/text-sherlock,boidolr; cbess,2,0,0
+durner/storn-keras,brandneb; durner; phdowling; taimir,4,0,0
+maykinmedia/django-exportdb,sergei-maertens,1,0,0
+paultag/revu,paultag,1,0,0
+andy-esch/django-xkcd-clone,andy-esch,1,0,0
+willcrichton/expressiveness-benchmark,glebshevchukk; kovach; willcrichton,3,0,0
+giscience/openelevationservice,nilsnolde,1,0,0
+floringogianu/neural-episodic-control,floringogianu,1,0,0
+mariogeiger/nn_jamming,mariogeiger,1,0,0
+funkelab/synistereq,aschampion; nilsec,2,0,0
+project-travel-mate/server,mohitkh7; prabhakar267,2,0,0
+softwareheritage/swh-scheduler,ardumont; douardda; olasd; progval,4,0,0
+dimagi/rapidsms-reminders,copelco; mlavin; tobiasmcnulty,3,0,0
+joachimwolff/schicexplorer,joachimwolff,1,0,0
+kylepw/m220p,kylepw,1,0,0
+deflatedpickle/ascii-painter,DeflatedPickle,1,0,0
+benhg/julia,benhg,1,0,0
+cte-bits-goa/certificate_generator,fenilsuchak; someshsingh22,2,0,0
+tonybaloney/pluralsight,tonybaloney,1,0,0
+rmorshea/idom-sandbox,rmorshea,1,0,0
+rmcgibbo/hyperopt-mixtape,rmcgibbo,1,0,0
+spyder-ide/conda-manager,ccordoba12; goanpeca,2,0,0
+joe-eklund/foreign-subs,joe-eklund; samueldeklund,2,0,0
+bitshares/uptick,christophersanborn; xeroc,2,0,0
+nasa/apod-api,akionsight; brianthomas; jnbetancourt; JustinGOSSES,4,0,0
+facultyai/faculty,acroz; eliasbenussi; pbugnion; tommilata,4,0,0
+fsherratt/upgraded-parakeet,fsherratt; Neoxas,2,0,0
+jakevdp/pypropack,jakevdp,1,0,0
+elixir-europe/prowes,uniqueg,1,0,0
+aldryn/aldryn-country-segment,czpython; mkoistinen,2,0,0
+pythrick/smart-pantry-api,pythrick,1,0,0
+yjh0410/yolov2-yolov3_pytorch,developer0hye; yjh0410,2,0,0
+hamiltont/webjuice,hamiltont,1,0,0
+soumi7/ey_gds_project,lohithmunakala; Soumi7; Swapnil8787,3,0,0
+dwillis/python-espncricinfo,dwillis,1,0,0
+galahproject/oracle,andycasey,1,0,0
+universitatjaumei/red,tombatossals; vrubert,2,0,0
+vintasoftware/django-templated-email,aericson; BradWhittington; tuliolages,3,0,0
+dataiku/dss-plugin-model-drift,du-phan; tdesfont,2,0,0
+diefenbach/lfs-theme,diefenbach; mthornhill; pigletto,3,0,0
+grst/single_cell_data_integration,grst,1,0,0
+digidotcom/xbee-micropython,diescalo; mikewadsten; rubenmoral,3,0,0
+missionpinball/mpf-docs,jabdoa2; qcapen; toomanybrians,3,0,0
+pkerpedjiev/nometonome,pkerpedjiev,1,0,0
+northbynorthwestern/2014-housing-guide,duner; TylerFisher,2,0,0
+bbc/nmos-common,andrewbonney; dannymeloy; jamesba; JamesGibo; simonrankine,5,0,0
+fabric8-analytics/fabric8-analytics-ingestion,geetikabatra; msrb; tisnik,3,0,0
+alex-mitrevski/explainable-robot-execution-models,alex-mitrevski,1,0,0
+angusmonroe/multiturnchatbot,AngusMonroe,1,0,0
+orionpax00/salsa_synthesis,orionpax00,1,0,0
+christimperley/cp2-repair-target,ChrisTimperley,1,0,0
+aotuai/brainframe-cli,velovix,1,0,0
+roboy/ravestate,josephbirkner; l-laura; nbasargin; NeginsCode; Toseban,5,0,0
+mehdidc/zoo,mehdidc,1,0,0
+eliseomartelli/casa-martelli-config,eliseomartelli,1,0,0
+lucaspolo/curso-django,lucaspolo,1,0,0
+ckan/ckanext-datastorer,amercader; domoritz; johnglover; kindly; nigelbabu,5,0,0
+patrikhlobil/pandas-bokeh,Ashton-Sidhu; PatrikHlobil,2,0,0
+kkew3/sat-minesweeper,kkew3,1,0,0
+4teamwork/ftw.dashboard.portlets.favourites,jone; phgross,2,0,0
+pfalcon/picotui,pfalcon,1,0,0
+softwaresaved/python-intermediate-inflammation,anenadic; jag1g13; steve-crouch,3,0,0
+marinalpo/fish_detection_and_tracking,marinalpo; ppalaupuigdevall,2,0,0
+laylalaisy/awesome,chenkaiyu1997; laylalaisy,2,0,0
+cigroup-ol/windml,aschmu; jph10191; jpzk,3,0,0
+neuroscout/neuroscout-cli,adelavega; qmac,2,0,0
